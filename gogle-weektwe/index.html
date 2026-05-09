@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL‑Shortener Service – Fast, Reliable, Free</title>
+  <meta name="description" content="A premium URL‑shortener built with Test‑Driven Development. Generate short links, track clicks, and enjoy 24‑hour TTL." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">URL‑Shortener</h1>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#api">API</a>
+        <a href="#stats">Stats</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container hero-content">
+      <h2 class="hero-title">Turn Long URLs into Short, Shareable Links</h2>
+      <p class="hero-subtitle">Built with TDD, reliable, and ready for production.</p>
+      <a href="#api" class="cta-button">Try the API</a>
+    </div>
+    <img src="images/hero.jpg" alt="Hero banner" class="hero-image" />
+  </section>
+
+  <!-- URL Input Form -->
+  <section class="features" id="api" style="margin-top:3rem;">
+    <div class="container">
+      <h2 class="section-title">Create a Short Link</h2>
+      <form id="shortenForm" class="shorten-form">
+        <input type="url" id="longUrl" placeholder="Enter a long URL" required style="width:70%;padding:0.6rem;font-size:1rem;" />
+        <button type="submit" class="cta-button" style="margin-left:0.5rem;">Shorten</button>
+      </form>
+      <p id="result" style="margin-top:1rem;font-weight:600;"></p>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="section-title">Key Features</h2>
+      <div class="grid">
+        <div class="feature-card">
+          <h3 class="feature-title">Instant Shortening</h3>
+          <p class="feature-desc">Submit a long URL and receive a 6‑character short key instantly.</p>
+        </div>
+        <div class="feature-card">
+          <h3 class="feature-title">Idempotent</h3>
+          <p class="feature-desc">Same URL always yields the same short link, avoiding duplicates.</p>
+        </div>
+        <div class="feature-card">
+          <h3 class="feature-title">TTL & Expiration</h3>
+          <p class="feature-desc">Links automatically expire after 24 hours (configurable).</p>
+        </div>
+        <div class="feature-card">
+          <h3 class="feature-title">Analytics</h3>
+          <p class="feature-desc">Access count increments on each redirect, accessible via the Stats API.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 URL‑Shortener Service – All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript to call the API -->
+  <script>
+    const form = document.getElementById('shortenForm');
+    const resultEl = document.getElementById('result');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const longUrl = document.getElementById('longUrl').value.trim();
+      resultEl.textContent = '';
+      try {
+        const response = await fetch('/shorten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: longUrl })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          resultEl.innerHTML = `Short URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a>`;
+        } else {
+          resultEl.textContent = `Error: ${data.error || 'Unknown error'}`;
+        }
+      } catch (err) {
+        resultEl.textContent = 'Network error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
