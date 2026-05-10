@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🗒️ Premium To‑Do List</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <main class="container">
+        <section class="hero">
+            <h1>My Tasks, Powered by Gemini</h1>
+            <p>Enter a task, let Gemini grade its difficulty, and manage it instantly.</p>
+        </section>
+        <section class="task-input">
+            <input type="text" id="new-task" placeholder="What do you need to do?" />
+            <button id="add-btn">Add Task</button>
+        </section>
+        <section class="task-list" id="task-list">
+            <!-- Tasks will be rendered here -->
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
