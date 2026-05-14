@@ -1,5 +1,5 @@
 // app.js – Handles UI, Supabase CRUD, and Gemini difficulty classification
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/esm/index.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 import { SUPABASE_URL, SUPABASE_ANON_KEY, classifyDifficulty } from "./config.js";
 
 // Initialize Supabase client
@@ -27,10 +27,9 @@ function renderTask(task) {
   item.className = "task-item";
   item.dataset.id = task.id;
 
-  const contentDiv = document.createElement("div");
-  contentDiv.className = "task-content";
-  contentDiv.textContent = task.content;
-
+  const titleDiv = document.createElement("div");
+  titleDiv.className = "task-content";
+  titleDiv.textContent = task.title;
   const badge = document.createElement("span");
   badge.className = `difficulty-badge difficulty-${task.difficulty.toLowerCase()}`;
   badge.textContent = task.difficulty;
@@ -41,7 +40,7 @@ function renderTask(task) {
   const editBtn = document.createElement("button");
   editBtn.textContent = "✏️";
   editBtn.title = "Edit";
-  editBtn.onclick = () => editTask(task.id, task.content);
+  editBtn.onclick = () => editTask(task.id, task.title);
 
   const delBtn = document.createElement("button");
   delBtn.textContent = "🗑️";
@@ -49,7 +48,7 @@ function renderTask(task) {
   delBtn.onclick = () => deleteTask(task.id);
 
   actionsDiv.append(editBtn, delBtn);
-  item.append(badge, contentDiv, actionsDiv);
+  item.append(badge, titleDiv, actionsDiv);
   taskList.appendChild(item);
 }
 
@@ -59,9 +58,10 @@ async function addTask() {
   if (!text) return;
   addBtn.disabled = true;
   const difficulty = await classifyDifficulty(text);
-  const { data, error } = await supabase.from("tasks").insert({ content: text, difficulty });
+  const { data, error } = await supabase.from("tasks").insert({ title: text, difficulty }).select();
   if (error) {
     console.error("Insert error:", error);
+    alert("Failed to add task! Error: " + error.message);
   } else {
     renderTask(data[0]);
     taskInput.value = "";
@@ -76,7 +76,7 @@ async function editTask(id, oldContent) {
   const trimmed = newContent.trim();
   if (!trimmed) return;
   const difficulty = await classifyDifficulty(trimmed);
-  const { error } = await supabase.from("tasks").update({ content: trimmed, difficulty }).eq("id", id);
+  const { error } = await supabase.from("tasks").update({ title: trimmed, difficulty }).eq("id", id);
   if (error) {
     console.error("Update error:", error);
     return;
